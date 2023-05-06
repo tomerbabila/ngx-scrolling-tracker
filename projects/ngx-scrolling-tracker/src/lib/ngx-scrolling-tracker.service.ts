@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { IScrollTracker } from './models';
+import { IOptions, IScrollTracker } from './models';
 import { BehaviorSubject, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class NgxScrollingTrackerService<T> {
+  public options: IOptions = { initialIndex: 0, parent: 'window' };
   private elements: IScrollTracker<T>[] = [];
   private elementsSubject = new BehaviorSubject(this.elements);
   public elements$ = this.elementsSubject.asObservable();
@@ -11,6 +12,10 @@ export class NgxScrollingTrackerService<T> {
 
   private activeIndex = new BehaviorSubject<number | undefined>(0);
   public activeIndex$ = this.activeIndex.asObservable();
+
+  constructor(ops: IOptions) {
+    this.options = { ...this.options, ...ops };
+  }
 
   addElement(element: HTMLElement, data: T) {
     this.elements.push({ element, data });
